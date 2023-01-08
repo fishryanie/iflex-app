@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Read",
+    "group": "User management",
+    "roles": ["User", "Administrator", "Moderator"]
+  },
+  {
+    "name": "Write",
+    "group": "User management",
+    "roles": ["Administrator"]
+  },
+  {
+    "name": "Update",
+    "group": "User management",
+    "roles": ["Administrator"]
+  },
+  {
+    "name": "Delete",
+    "group": "User management",
+    "roles": ["Administrator"]
+  }
+]
+

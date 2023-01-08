@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Moderator",
+    "description": "Người nắm quyền quản lý cao nhất của hệ thống."
+  },
+  {
+    "name": "Administrator",
+    "description": "Người quản trị dữ liệu của hệ thống"
+  },
+  {
+    "name": "User",
+    "description": "Người dùng đã đăng ký tài khoản và đăng nhập để sử dụng ứng dụng."
+  }
+]

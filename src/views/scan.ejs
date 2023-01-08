@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <video id="preview"></video>
+  <div class="container"></div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+  <script type="text/javascript">
+    let idUser = "<%= data._id %>";
+    console.log("🚀 ~ file: scan.ejs ~ line 19 ~ idUser", idUser)
+    let avatar = "<%= data.images.avatar.url %>";
+    let displayName = "<%= data.displayName %>";
+    let listGroups = "<%= data.groups %>";
+
+    let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+    console.log();
+    scanner.addListener('scan', async function (content) {
+      console.log("🚀 ~ file: scan.ejs ~ line 26 ~ content", content)
+      if(listGroups.split(',').includes(content)){
+        console.log('bạn đã điểm danh thành công')
+        document.querySelector('.container').innerHTML = `
+          <h3>Bạn đã điểm danh thành công</h3>
+          <p>${displayName}</p>
+          <img src="${avatar}" width='100px'/>
+        `
+        const response = await fetch('http://localhost:3001/api/auth/checkin',{
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({idUser: idUser, idGroup: content})
+        })
+        console.log("🚀 ~ file: scan.ejs ~ line 44 ~ response", response)
+      } else {
+        document.querySelector('.container').innerHTML = `<h3>bạn chưa phải thành viên</h3>`
+        console.log('bạn chưa phải thành viên của ' + content)
+      }    
+    });
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[0]);
+      } else {
+        console.error('No cameras found.');
+      }
+    }).catch(function (e) {
+      console.error(e);
+    });
+  </script>
+</body>
+</html>
