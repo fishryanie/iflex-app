@@ -11,7 +11,7 @@ import createError from 'http-errors';
 // import routersApp from './src/routers/auth.mjs';
 import routersAuth from './src/routers/auth.mjs';
 import database from './src/configs/database.mjs';
-import { fakeRole } from './src/mock/index.mjs';
+// import { fakeRole } from './src/mock/index.mjs';
 import upload from './src/configs/upload.mjs';
 
 const app = express();
@@ -19,7 +19,7 @@ const app = express();
 env.config();
 
 database()
-fakeRole()
+// fakeRole()
 
 
 app.use(cors());
