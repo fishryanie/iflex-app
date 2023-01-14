@@ -6,6 +6,7 @@ import mongoose_delete from 'mongoose-delete';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { EXPIRES_OTP, STATUS_USER } from '../constants/index.mjs';
+import { IMAGES } from '../assets/images/index.mjs';
 
 // env.config();
 
@@ -151,8 +152,8 @@ const productSchema = new mongoose.Schema(
         id: { type: String, default: '' },
       },
       wallPaper: {
-        url: { type: String, default: '' },
-        id: { type: String, default: '' },
+        url: { type: String, default: IMAGES.nullBackground },
+        id: { type: String, default: 'no-background_zmfqjl' },
       },
     },
   },
@@ -163,17 +164,17 @@ const productSchema = new mongoose.Schema(
 const groupSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true, trim: true },
-    qrcode: { type: String, required: true, unique: true, trim: true },
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
-    membership: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users', default: null }],
+    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'groups', default: null },
+    delay: {type: Number, default: null},
     images: {
       avatar: {
         url: { type: String, default: '' },
         id: { type: String, default: '' },
       },
       wallPaper: {
-        url: { type: String, default: '' },
-        id: { type: String, default: '' },
+        url: { type: String, default: IMAGES.nullBackground },
+        id: { type: String, default: 'no-background_zmfqjl' },
       },
     },
   },

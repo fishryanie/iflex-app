@@ -231,7 +231,7 @@ const authController = {
   //==========================================|| USER ||==========================================>>
   findOneUser: async (req, res) => {
     try {
-      const userId = req.query.userId || req.currentUser._id
+      const userId = req.query.userId || req.currentUser._id;
       const result = await models.users
         .findOne({ _id: userId }, { __v: 0, password: 0 })
         .populate('roles', 'name')
@@ -366,8 +366,17 @@ const authController = {
   uploadAvatar: async (req, res) => {
     try {
       const path = req.files.avatar[0].path;
+      const { searchType, groupId } = req.query;
       const { _id } = req.currentUser;
-      const { id, url } = await cloudCreate(path, 'user');
+      switch (searchType) {
+        case value:
+          const { id, url } = await cloudCreate(path, 'user');
+          
+          break;
+      
+        default:
+          break;
+      }
       const result = await models.users.findOneAndUpdate(
         { _id },
         { images: { avatar: { id, url } } },

@@ -8,7 +8,7 @@ import express from 'express';
 import cookies from 'cookie-parser';
 import createError from 'http-errors';
 // import formatData from './src/configs/mockapi';
-// import routersApp from './src/routers/auth.mjs';
+import routersApp from './src/routers/app.mjs';
 import routersAuth from './src/routers/auth.mjs';
 import database from './src/configs/database.mjs';
 // import { fakeRole } from './src/mock/index.mjs';
@@ -39,10 +39,14 @@ app.use(upload.fields([
   { name: 'avatar', maxCount: 2 }
 ])); 
 
+app.get('/api/v1/configs-app', (req, res) => res.send({success: true}))
+
 app.use('/api/v1/auth', routersAuth);
+app.use('/api/v1/app', routersApp);
 
-app.use((req, res, next) => next(createError(404)));
 
+app.use((req, res, next) => next(createError(404, 'NOT FOUND API')));
+ 
 
 
 
@@ -54,7 +58,7 @@ app.use((req, res, next) => next(createError(404)));
 
 
 
-  
+
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(process.env.PORT || 8000, () => {
