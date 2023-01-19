@@ -1,6 +1,7 @@
 /** @format */
 
-import models from '../model/index.mjs';
+import models from '#models';
+
 // import sendSMS from '../configs/twlio';
 import qr from 'qrcode';
 import jwt from 'jsonwebtoken';
@@ -104,11 +105,7 @@ const authController = {
     try {
       const { phone, password } = req.body;
       const hashPassword = await models.users.hashPassword(password);
-      const result = await models.users.findOneAndUpdate(
-        { phone: phone },
-        { password: hashPassword },
-        { new: true },
-      );
+      const result = await models.users.findOneAndUpdate({ phone: phone }, { password: hashPassword }, { new: true });
       if (!result) {
         return res.status(400).send({
           success: false,
@@ -128,11 +125,7 @@ const authController = {
       const newPwd = generatePassword();
       const newPwdHash = await models.users.hashPassword(newPwd);
       if (phone) {
-        const result = await models.users.findOneAndUpdate(
-          { phone },
-          { password: newPwdHash },
-          { new: true },
-        );
+        const result = await models.users.findOneAndUpdate({ phone }, { password: newPwdHash }, { new: true });
         if (!result) {
           return res.status(404).send({
             success: false,
@@ -145,11 +138,7 @@ const authController = {
           message: 'New password has been sent to your phone number',
         });
       } else {
-        const result = await models.users.findOneAndUpdate(
-          { email },
-          { password: newPwdHash },
-          { new: true },
-        );
+        const result = await models.users.findOneAndUpdate({ email }, { password: newPwdHash }, { new: true });
         if (!result) {
           return res.status(404).send({
             success: false,
@@ -247,9 +236,7 @@ const authController = {
         });
       }
     } catch (error) {
-      return error.kind === 'ObjectId'
-        ? notFoundError(res, 'Id user does not exist')
-        : serverError(error, res);
+      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
     }
   },
 
@@ -309,9 +296,7 @@ const authController = {
             message: 'Delete User Successfully',
           });
     } catch (error) {
-      return error.kind === 'ObjectId'
-        ? notFoundError(res, 'Id user does not exist')
-        : serverError(error, res);
+      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
     }
   },
 
@@ -335,9 +320,7 @@ const authController = {
         });
       }
     } catch (error) {
-      return error.kind === 'ObjectId'
-        ? notFoundError(res, 'Id user does not exist')
-        : serverError(error, res);
+      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
     }
   },
 
@@ -357,9 +340,7 @@ const authController = {
       };
       return res.status(200).send(response);
     } catch (error) {
-      return error.kind === 'ObjectId'
-        ? notFoundError(res, 'Id user does not exist')
-        : serverError(error, res);
+      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
     }
   },
 
@@ -371,16 +352,13 @@ const authController = {
       switch (searchType) {
         case value:
           const { id, url } = await cloudCreate(path, 'user');
-          
+
           break;
-      
+
         default:
           break;
       }
-      const result = await models.users.findOneAndUpdate(
-        { _id },
-        { images: { avatar: { id, url } } },
-      );
+      const result = await models.users.findOneAndUpdate({ _id }, { images: { avatar: { id, url } } });
       if (result) {
         await cloudDelete(result.images.avatar.id);
         const response = {
@@ -390,7 +368,20 @@ const authController = {
         return res.status(200).send(response);
       }
     } catch (error) {
-      return serverError(error, res);
+      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
+    }
+  },
+
+  joinGroup: async (req, res) => {
+    try {
+      const result = await models.users.findOneAndUpdate(
+        { _id: req.currentUser },
+        { $addToSet: { groups: req.query.groupId } },
+        { new: true },
+      );
+      return res.status(200).send({data: result});
+    } catch (error) {
+      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
     }
   },
 
@@ -439,11 +430,7 @@ const authController = {
           localField: '_id',
           foreignField: 'roles',
           as: 'users',
-          pipeline: [
-            { $match: { deleted: false } },
-            { $limit: 8 },
-            { $project: { avatar: '$images.avatar.url' } },
-          ],
+          pipeline: [{ $match: { deleted: false } }, { $limit: 8 }, { $project: { avatar: '$images.avatar.url' } }],
         },
       },
       { $project: { name: 1, users: 1 } },
@@ -517,10 +504,7 @@ const authController = {
     console.log(req.body.fileact + '-file');
     var i = await services.getActByCode(c, req.user._id);
     if (!i) return res.send({ e: 'Không tìm thấy hoạt động cần tải file lên!', s: false });
-    await readXlsxFile(`./public/files/xlsx/${c}.xlsx`, { sheet: 'DIEMDANH' }).then(async function (
-      rows,
-      error,
-    ) {
+    await readXlsxFile(`./public/files/xlsx/${c}.xlsx`, { sheet: 'DIEMDANH' }).then(async function (rows, error) {
       if (error) {
         console.log('Lỗi đọc file: ' + error);
         return res.send({

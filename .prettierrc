@@ -6,7 +6,7 @@
   "htmlWhitespaceSensitivity": "css",
   "insertPragma": true,
   "jsxSingleQuote": false,
-  "printWidth": 100,
+  "printWidth": 90,
   "proseWrap": "preserve",
   "quoteProps": "as-needed",
   "requirePragma": false,

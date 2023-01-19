@@ -6,7 +6,7 @@ import express from 'express';
 
 import authController from '../controllers/auth.mjs';
 
-import models from '../model/index.mjs';
+import models from '#models';
 
 import moment from 'moment';
 import { checkPhone, verifyPermission, verifyPwd, verifyToken, verifyUsername } from '../middlewares/index.mjs';
@@ -32,6 +32,8 @@ router.route('/changePass').post(verifyToken, authController.changePwd);
 router.route('/uploadAvatar').post(verifyToken, authController.uploadAvatar);
 
 router.route('/editProfile').put(verifyToken, authController.editProfile);
+
+router.route('/joinGroup').patch(verifyToken, authController.joinGroup);
 
 router.route('/findOneUser').get(
   verifyToken,

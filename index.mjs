@@ -7,12 +7,13 @@ import morgan from 'morgan';
 import express from 'express';
 import cookies from 'cookie-parser';
 import createError from 'http-errors';
-// import formatData from './src/configs/mockapi';
 import routersApp from './src/routers/app.mjs';
 import routersAuth from './src/routers/auth.mjs';
 import database from './src/configs/database.mjs';
-// import { fakeRole } from './src/mock/index.mjs';
 import upload from './src/configs/upload.mjs';
+import InsetFakeData from './src/helpers/FakeData.mjs';
+
+
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use((req, res, next) => next(createError(404, 'NOT FOUND API')));
 
 
 
+// InsetFakeData();
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(process.env.PORT || 8000, () => {

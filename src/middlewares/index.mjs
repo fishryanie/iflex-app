@@ -1,7 +1,7 @@
 /** @format */
 
 import jwt from 'jsonwebtoken';
-import models from '../model/index.mjs';
+import models from '#models';
 import { REGEX_PHONE, STATUS_NEXT } from '../constants/index.mjs';
 import { notFoundError, serverError, URLToTile } from '../helpers/index.mjs';
 const { TokenExpiredError } = jwt;

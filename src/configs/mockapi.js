@@ -20,12 +20,10 @@ const formatData = async () => {
 
   Promise.all([
     models.users.deleteMany(),
-
     models.roles.deleteMany(),
-
     models.groups.deleteMany(),
-
     models.features.deleteMany(),
+    
  
   ]).then(async response => {
     const arrayRoles = await models.roles.insertMany(mock.roles)

@@ -1,6 +1,6 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
-const app = require('../../index')
+const app = require('../../index.mjs')
 const expect = chai.expect;
 
 chai.use(chaiHttp);

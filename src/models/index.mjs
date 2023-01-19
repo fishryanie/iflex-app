@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import mongoose_delete from 'mongoose-delete';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { EXPIRES_OTP, STATUS_USER } from '../constants/index.mjs';
+import { EXPIRES_OTP, STATUS_USER, EXPIRES_TOKEN } from '#constants';
 import { IMAGES } from '../assets/images/index.mjs';
 
 // env.config();
@@ -66,8 +66,8 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: true,
-      required: true,
       default: '',
+      maxlength: 11,
     },
     email: {
       type: String,
@@ -121,7 +121,8 @@ const userSchema = new mongoose.Schema(
 const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true, trim: true },
-    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+    parent: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', required: null },
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: null },
     images: {
       avatar: {
         url: { type: String, default: '' },
@@ -166,7 +167,7 @@ const groupSchema = new mongoose.Schema(
     name: { type: String, required: true, unique: true, trim: true },
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
     parent: { type: mongoose.Schema.Types.ObjectId, ref: 'groups', default: null },
-    delay: {type: Number, default: null},
+    delay: { type: Number, default: null },
     images: {
       avatar: {
         url: { type: String, default: '' },
@@ -243,19 +244,11 @@ const activitiesSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const listSchema = [
-  userSchema,
-  roleSchema,
-  groupSchema,
-  productSchema,
-  checkinSchema,
-  categorySchema,
-  oderSchema,
-];
+const listSchema = [userSchema, roleSchema, groupSchema, productSchema, checkinSchema, categorySchema, oderSchema];
 
 //====================================METHODS========================================>>
 userSchema.static('generateJWT', function (userId) {
-  return jwt.sign({ _id: userId }, process.env.JWT_SECRET_KEY, { expiresIn: '10m' });
+  return jwt.sign({ _id: userId }, process.env.JWT_SECRET_KEY, { expiresIn: EXPIRES_TOKEN });
 });
 
 userSchema.static('generateRefreshJWT', function (userId) {
@@ -286,16 +279,11 @@ userSchema.pre('save', function (next) {
 });
 
 //====================================PLUGIN========================================>>
-listSchema.forEach(item =>
-  item.plugin(mongoose_delete, { overrideMethods: true, deletedAt: true }),
-);
+listSchema.forEach(item => item.plugin(mongoose_delete, { overrideMethods: true, deletedAt: true }));
 
 //====================================INDEX=========================================>>
 listSchema.forEach(item =>
-  item.index(
-    { deletedAt: 1 },
-    { expireAfterSeconds: 2678400, partialFilterExpression: { deleted: true } },
-  ),
+  item.index({ deletedAt: 1 }, { expireAfterSeconds: 2678400, partialFilterExpression: { deleted: true } }),
 ); // automatically deleted after 90 days since field deleted has value
 
 //====================================MODELS========================================>>
