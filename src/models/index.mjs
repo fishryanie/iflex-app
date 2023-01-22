@@ -48,7 +48,7 @@ const oderSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const checkinSchema = new mongoose.Schema(
+const checkInSchema = new mongoose.Schema(
   {
     group: { type: mongoose.Schema.Types.ObjectId, ref: 'groups' },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
@@ -168,6 +168,8 @@ const groupSchema = new mongoose.Schema(
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
     parent: { type: mongoose.Schema.Types.ObjectId, ref: 'groups', default: null },
     delay: { type: Number, default: null },
+    address: { type: String, default: null },
+    activeTime: { type: Array, default: null },
     images: {
       avatar: {
         url: { type: String, default: '' },
@@ -244,11 +246,21 @@ const activitiesSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const listSchema = [userSchema, roleSchema, groupSchema, productSchema, checkinSchema, categorySchema, oderSchema];
+const listSchema = [
+  userSchema,
+  roleSchema,
+  groupSchema,
+  productSchema,
+  checkInSchema,
+  categorySchema,
+  oderSchema,
+];
 
 //====================================METHODS========================================>>
 userSchema.static('generateJWT', function (userId) {
-  return jwt.sign({ _id: userId }, process.env.JWT_SECRET_KEY, { expiresIn: EXPIRES_TOKEN });
+  return jwt.sign({ _id: userId }, process.env.JWT_SECRET_KEY, {
+    expiresIn: EXPIRES_TOKEN,
+  });
 });
 
 userSchema.static('generateRefreshJWT', function (userId) {
@@ -279,21 +291,26 @@ userSchema.pre('save', function (next) {
 });
 
 //====================================PLUGIN========================================>>
-listSchema.forEach(item => item.plugin(mongoose_delete, { overrideMethods: true, deletedAt: true }));
+listSchema.forEach(item =>
+  item.plugin(mongoose_delete, { overrideMethods: true, deletedAt: true }),
+);
 
 //====================================INDEX=========================================>>
 listSchema.forEach(item =>
-  item.index({ deletedAt: 1 }, { expireAfterSeconds: 2678400, partialFilterExpression: { deleted: true } }),
+  item.index(
+    { deletedAt: 1 },
+    { expireAfterSeconds: 2678400, partialFilterExpression: { deleted: true } },
+  ),
 ); // automatically deleted after 90 days since field deleted has value
 
 //====================================MODELS========================================>>
 const models = {
-  otps: mongoose.model('otps', otpSchema),
+  otp: mongoose.model('otp', otpSchema),
   users: mongoose.model('users', userSchema),
   roles: mongoose.model('roles', roleSchema),
-  oders: mongoose.model('oders', oderSchema),
+  orders: mongoose.model('orders', oderSchema),
   groups: mongoose.model('groups', groupSchema),
-  checkin: mongoose.model('checkin', checkinSchema),
+  checkIn: mongoose.model('checkIn', checkInSchema),
   features: mongoose.model('features', featureSchema),
   products: mongoose.model('products', productSchema),
   categories: mongoose.model('categories', categorySchema),

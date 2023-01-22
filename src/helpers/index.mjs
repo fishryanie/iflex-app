@@ -39,7 +39,8 @@ export const generatePassword = (length = 16) => {
     numbers: '1234567890',
     symbols: '!@#$%^&*',
   };
-  const getRandomCharFromString = str => str.charAt(Math.floor(Math.random() * str.length));
+  const getRandomCharFromString = str =>
+    str.charAt(Math.floor(Math.random() * str.length));
   pwd += getRandomCharFromString(allowed.uppers); //pwd will have at least one upper
   pwd += getRandomCharFromString(allowed.lowers); //pwd will have at least one lower
   pwd += getRandomCharFromString(allowed.numbers); //pwd will have at least one number
@@ -64,50 +65,41 @@ export const notFoundError = (res, message) => {
   });
 };
 
-export const serverError = (error, res) => {
+export const serverError = (res, error) => {
   return res.status(500).send({
     success: false,
     message: error.message,
   });
 };
 
-export const handleError = (key, request, response, error) => {
-  const customLog = (api, message) => {
-    return (
-      '[' +
-      api.substr(1) +
-      ']' +
-      ' - ' +
-      message +
-      ' - ' +
-      moment(new Date()).format('HH:MM, DD/MM/YYYY')
-    );
-  };
-  switch (key) {
-    case 'PERMISSION': {
-      const result = {
-        success: false,
-        message: 'Bạn không có quyền try cập tính năng này',
-      };
-      console.log(colorWarning(customLog(request.url, result.message)));
-      return response.status(403).send(result);
-    }
-    case 'NOT_FOUND':
-      const result = {
-        success: false,
-        message: 'Not found id ' + error.value,
-      };
-      console.log(colorError(customLog(request.url, result.message)));
-      return response.status(400).send(result);
-    case 'GENERAL': {
-      const result = {
-        success: false,
-        message: 'Sever error',
-      };
-      console.log(termination(customLog(request.url, result.message)));
-      return response.status(500).send(result);
-    }
-    default:
-      break;
+
+export const Pagination = request => {
+  const keywords = request.query.keywords;
+  const numShow = parseInt(request.query.numShow) || 10;
+  const orderby = parseInt(request.query.orderby) || 1;
+  const page = parseInt(request.query.page) || 1;
+  const sort = { [request.query.sort]: orderby };
+  const skip = (page - 1) * numShow;
+  const filter = { deleted: false };
+  if (keywords) {
+    filter['name'] = { $regex: '.*' + keywords, $options: 'i' };
   }
+  const query = [
+    { $match: filter },
+    { $sort: sort },
+    { $group: { _id: '$root', data: { $push: '$$ROOT' }, total: { $sum: 1 } } },
+    { $project: { _id: 0 } },
+    {
+      $addFields: {
+        page,
+        numShow,
+        data: { $slice: ['$data', skip, numShow] },
+        totalPage:
+          '$total' % numShow === 0
+            ? { $divide: ['$total', numShow] }
+            : { $toInt: { $sum: [{ $divide: ['$total', numShow] }, 0] } },
+      },
+    },
+  ];
+  return { query, filter };
 };

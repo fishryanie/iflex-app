@@ -11,7 +11,7 @@
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel ./src -d ./build/src",
     "production": "npm run build && node ./build/src/index.mjs",
-    "dev": "nodemon --exec ./node_modules/.bin/babel-node ./index.mjs",
+    "dev": "nodemon ./index.mjs",
     "start": "pm2 start index.mjs --name flook-server-app --no-daemon --log-date-format='MM-DD hh:mm:ss.SSS A'"
   },
   "keywords": [],
@@ -20,9 +20,10 @@
   "imports": {
     "#mocks": "./src/mocks/index.mjs",
     "#models": "./src/models/index.mjs",
+    "#helpers": "./src/helpers/index.mjs",
     "#constants": "./src/constants/index.mjs",
+    "#controllers": "./src/controllers/index.mjs",
     "#routers": "./src/routers"
-
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -43,6 +44,7 @@
     "mongoose-delete": "^0.5.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "node-geocoder": "^4.2.0",
     "otp-generator": "^2.0.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
