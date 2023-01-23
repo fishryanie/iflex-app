@@ -5,7 +5,6 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 export const DATA_LOCATION = require('./data/location.json');
-console.log('🚀 ~ file: index.mjs:8 ~ DATA_LOCATION', DATA_LOCATION.province);
 
 export const DATA_ROLES = require('./data/roles.json');
 

@@ -23,7 +23,7 @@ const configsMongodb = {
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 30000,
   },
 };
 

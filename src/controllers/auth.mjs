@@ -105,7 +105,11 @@ const authController = {
     try {
       const { phone, password } = req.body;
       const hashPassword = await models.users.hashPassword(password);
-      const result = await models.users.findOneAndUpdate({ phone: phone }, { password: hashPassword }, { new: true });
+      const result = await models.users.findOneAndUpdate(
+        { phone: phone },
+        { password: hashPassword },
+        { new: true },
+      );
       if (!result) {
         return res.status(400).send({
           success: false,
@@ -125,7 +129,11 @@ const authController = {
       const newPwd = generatePassword();
       const newPwdHash = await models.users.hashPassword(newPwd);
       if (phone) {
-        const result = await models.users.findOneAndUpdate({ phone }, { password: newPwdHash }, { new: true });
+        const result = await models.users.findOneAndUpdate(
+          { phone },
+          { password: newPwdHash },
+          { new: true },
+        );
         if (!result) {
           return res.status(404).send({
             success: false,
@@ -138,7 +146,11 @@ const authController = {
           message: 'New password has been sent to your phone number',
         });
       } else {
-        const result = await models.users.findOneAndUpdate({ email }, { password: newPwdHash }, { new: true });
+        const result = await models.users.findOneAndUpdate(
+          { email },
+          { password: newPwdHash },
+          { new: true },
+        );
         if (!result) {
           return res.status(404).send({
             success: false,
@@ -192,7 +204,9 @@ const authController = {
       const verifyRefreshToken = await models.users.validRefreshJWT(refreshToken);
       if (verifyRefreshToken) {
         const newAccessToken = await models.users.generateJWT(verifyRefreshToken._id);
-        const newRefreshToken = await models.users.generateRefreshJWT(verifyRefreshToken._id);
+        const newRefreshToken = await models.users.generateRefreshJWT(
+          verifyRefreshToken._id,
+        );
         const result = await models.users.findOneAndUpdate(
           { _id: verifyRefreshToken._id },
           { $set: { refreshToken: newRefreshToken, accessToken: newAccessToken } },
@@ -219,8 +233,6 @@ const authController = {
 
   //==========================================|| USER ||==========================================>>
 
-
-  
   uploadAvatar: async (req, res) => {
     try {
       const path = req.files.avatar[0].path;
@@ -235,7 +247,10 @@ const authController = {
         default:
           break;
       }
-      const result = await models.users.findOneAndUpdate({ _id }, { images: { avatar: { id, url } } });
+      const result = await models.users.findOneAndUpdate(
+        { _id },
+        { images: { avatar: { id, url } } },
+      );
       if (result) {
         await cloudDelete(result.images.avatar.id);
         const response = {
@@ -245,7 +260,9 @@ const authController = {
         return res.status(200).send(response);
       }
     } catch (error) {
-      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
+      return error.kind === 'ObjectId'
+        ? notFoundError(res, 'Id user does not exist')
+        : serverError(error, res);
     }
   },
 
@@ -256,9 +273,11 @@ const authController = {
         { $addToSet: { groups: req.query.groupId } },
         { new: true },
       );
-      return res.status(200).send({data: result});
+      return res.status(200).send({ data: result });
     } catch (error) {
-      return error.kind === 'ObjectId' ? notFoundError(res, 'Id user does not exist') : serverError(error, res);
+      return error.kind === 'ObjectId'
+        ? notFoundError(res, 'Id user does not exist')
+        : serverError(error, res);
     }
   },
 
@@ -307,7 +326,11 @@ const authController = {
           localField: '_id',
           foreignField: 'roles',
           as: 'users',
-          pipeline: [{ $match: { deleted: false } }, { $limit: 8 }, { $project: { avatar: '$images.avatar.url' } }],
+          pipeline: [
+            { $match: { deleted: false } },
+            { $limit: 8 },
+            { $project: { avatar: '$images.avatar.url' } },
+          ],
         },
       },
       { $project: { name: 1, users: 1 } },
@@ -358,7 +381,9 @@ const authController = {
     try {
       const result = await models.features.aggregate([
         { $project: { name: 1, group: 1 } },
-        { $group: { _id: '$group', selector: { $push: { _id: '$_id', name: '$name' } } } },
+        {
+          $group: { _id: '$group', selector: { $push: { _id: '$_id', name: '$name' } } },
+        },
       ]);
       return res.status(200).send({ success: true, data: result });
     } catch (error) {
@@ -380,18 +405,21 @@ const authController = {
     var c = req.params.c;
     console.log(req.body.fileact + '-file');
     var i = await services.getActByCode(c, req.user._id);
-    if (!i) return res.send({ e: 'Không tìm thấy hoạt động cần tải file lên!', s: false });
-    await readXlsxFile(`./public/files/xlsx/${c}.xlsx`, { sheet: 'DIEMDANH' }).then(async function (rows, error) {
-      if (error) {
-        console.log('Lỗi đọc file: ' + error);
-        return res.send({
-          e: 'Dường như có lỗi nào đó đã xảy ra trong quá trình đọc file mà bạn tải lên! Hãy chắc chắn rằng file bản tải lên là đúng trước khi thử lại!',
-          s: false,
-        });
-      }
-      await services.updateNumTPIAct(c, rows.length - 1, req.user._id);
-      await services.uploadedFileCheckinActById(i._id);
-    });
+    if (!i)
+      return res.send({ e: 'Không tìm thấy hoạt động cần tải file lên!', s: false });
+    await readXlsxFile(`./public/files/xlsx/${c}.xlsx`, { sheet: 'DIEMDANH' }).then(
+      async function (rows, error) {
+        if (error) {
+          console.log('Lỗi đọc file: ' + error);
+          return res.send({
+            e: 'Dường như có lỗi nào đó đã xảy ra trong quá trình đọc file mà bạn tải lên! Hãy chắc chắn rằng file bản tải lên là đúng trước khi thử lại!',
+            s: false,
+          });
+        }
+        await services.updateNumTPIAct(c, rows.length - 1, req.user._id);
+        await services.uploadedFileCheckinActById(i._id);
+      },
+    );
     return res.send({ n: i.name, s: true });
   },
 

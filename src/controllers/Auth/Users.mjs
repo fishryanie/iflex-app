@@ -159,5 +159,4 @@ const userController = {
   },
 };
 
-
-export default userController
+export default userController;

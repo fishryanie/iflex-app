@@ -1,5 +1,5 @@
 {
-  "name": "Auth-System",
+  "name": "IFLEX",
   "version": "1.0.0",
   "description": "",
   "main": "index.mjs",
@@ -12,7 +12,7 @@
     "build-babel": "babel ./src -d ./build/src",
     "production": "npm run build && node ./build/src/index.mjs",
     "dev": "nodemon ./index.mjs",
-    "start": "pm2 start index.mjs --name flook-server-app --no-daemon --log-date-format='MM-DD hh:mm:ss.SSS A'"
+    "start": "pm2 start index.mjs --name IFLEX --no-daemon --log-date-format='MM-DD hh:mm:ss.SSS A'"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +27,6 @@
     "#routers": "./src/routers"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "chai": "^4.3.6",
     "chai-http": "^4.3.0",
@@ -35,7 +34,6 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "ejs": "^3.1.8",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
@@ -49,7 +47,7 @@
     "otp-generator": "^2.0.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.5.2",
+    "pm2": "^5.2.2",
     "twilio": "^3.81.0"
   },
   "devDependencies": {

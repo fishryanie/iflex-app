@@ -6,9 +6,9 @@
     "paths": {
       "#models": ["models/index.mjs"],
       "#helpers": ["helpers/index.mjs"],
-      "#controllers": ["controllers/index.mjs"],
+      "#controllers": ["controllers/index.mjs"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "test", "src/configs"],
   "exclude": ["node_modules"]
 }
