@@ -57,8 +57,8 @@ function toast({ title = '', message = '', type = 'info', duration = 3000 }) {
 }
 
 function generateData() {
-  fetch('http://localhost:8000/generate-data')
-  // fetch('https://iflex.onrender.com/generate-data')
+  // fetch('http://localhost:8000/generate-data')
+  fetch('https://iflex.onrender.com/generate-data')
     .then(response => response.json())
     .then(data => {
       toast({
