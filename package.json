@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "imports": {
+    "#introduce": "./src/views/introduce/index.html",
     "#mocks": "./src/mocks/index.mjs",
     "#models": "./src/models/index.mjs",
     "#helpers": "./src/helpers/index.mjs",
