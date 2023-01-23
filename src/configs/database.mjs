@@ -17,7 +17,7 @@ const mongooseUrlLocal = process.env.IFLEX_DATABASE_URL_LOCAL + process.env.IFLE
 const mongooseUrlGlobal = `mongodb+srv://${process.env.IFLEX_DATABASE_USERNAME}:${process.env.IFLEX_DATABASE_PASSWORD}@cluster0.lqsyp.mongodb.net/${process.env.IFLEX_DATABASE_NAME}?retryWrites=true&w=majority`;
 
 const configsMongodb = {
-  url: mongooseUrlLocal,
+  url: mongooseUrlGlobal,
   options: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
