@@ -6,7 +6,6 @@ import mongoose_delete from 'mongoose-delete';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { EXPIRES_OTP, STATUS_USER, EXPIRES_TOKEN } from '#constants';
-import { IMAGES } from '../assets/images/index.mjs';
 
 // env.config();
 
@@ -153,7 +152,7 @@ const productSchema = new mongoose.Schema(
         id: { type: String, default: '' },
       },
       wallPaper: {
-        url: { type: String, default: IMAGES.nullBackground },
+        url: { type: String, default: '' },
         id: { type: String, default: 'no-background_zmfqjl' },
       },
     },
@@ -176,7 +175,7 @@ const groupSchema = new mongoose.Schema(
         id: { type: String, default: '' },
       },
       wallPaper: {
-        url: { type: String, default: IMAGES.nullBackground },
+        url: { type: String, default: '' },
         id: { type: String, default: 'no-background_zmfqjl' },
       },
     },
