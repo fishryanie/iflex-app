@@ -3,9 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Responsive NFT Landing Page</title>
+  <title>I F L E X</title>
+  <link rel="icon" href="/images/dumbbell.png">
+  <link rel="apple-touch-icon" href="/images/dumbbell.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
     integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
     crossorigin="anonymous" />
@@ -21,7 +24,7 @@
   <!-- partial:index.partial.html -->
   <div class="landingpage">
     <div class="navbar">
-      <a class="navlogo">GASLUR</a>
+      <a class="navlogo">IFLEX</a>
       <button class="hamburger">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
@@ -30,26 +33,43 @@
       </button>
       <div class="navlinkwrap">
         <span class="navlink selectedlink">Home</span>
-        <span class="navlink">My Profile</span>
-        <span class="navlink">Activity</span>
+        <span class="navlink">Team Founder</span>
+        <span class="navlink">Post man API</span>
         <span class="navlink">How It Works</span>
+        <span class="navlink">Document</span>
       </div>
       <div class="buttonwrap">
-        <button class="createbtn selectedbtn">CREATE</button>
-        <button class="createbtn">SIGN IN</button>
+        <button class="createbtn selectedbtn">Join us</button>
+        <button class="createbtn" onclick="generateData();">Generate Data Test</button>
       </div>
     </div>
     <div class="box">
       <div class="infobox">
         <p class="infobox-boldtext">
-          IFLEX
+          Wellcome to IFLEX
+        </p>
+        <p class="infobox-semboldtext">Benifit when using app</p>
+        <p class="infobox-slimtext">
+          - Personal assistant at the gym
         </p>
         <p class="infobox-slimtext">
-          Your powerful assistant
+          - Help gym owners easily manage members
+        </p>
+        <p class="infobox-slimtext">
+          - Help users to setup meal plan and workout plan
+        </p>
+        <p class="infobox-slimtext">
+          - Help Personal trainer to take good care of their students
+        </p>
+        <p class="infobox-slimtext">
+          - Make the small business of some stores selling dietary supplements more convenient
         </p>
         <div class="infobox-btnwrapper">
-          <button class="infobox-explorebtn selected">Explore</button>
-          <button class="infobox-createbtn" onclick="generateData();">Generate data</button>
+          <button class="infobox-explorebtn selected">
+            <i class='bx bxs-download bx-fade-down'></i>
+            Download App
+          </button>
+          <button class="infobox-createbtn">View Admin Page</button>
         </div>
       </div>
       <div class="display">
@@ -334,7 +354,7 @@
 
   <script>
 
-   
+
   </script>
 
 </body>
