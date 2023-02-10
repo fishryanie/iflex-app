@@ -6,6 +6,7 @@
     "paths": {
       "#models": ["models/index.mjs"],
       "#helpers": ["helpers/index.mjs"],
+      "#constants": ["constants/index.mjs"],
       "#controllers": ["controllers/index.mjs"]
     }
   },

@@ -1,11 +1,10 @@
 /** @format */
 
 // import env from 'dotenv';
-import mongoose from 'mongoose';
+import { EXPIRES_OTP } from '#constants';
 import mongoose_delete from 'mongoose-delete';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { EXPIRES_OTP, STATUS_USER, EXPIRES_TOKEN } from '#constants';
+import mongoose from 'mongoose';
+import userSchema from './user.mjs';
 
 // env.config();
 
@@ -56,65 +55,6 @@ const checkInSchema = new mongoose.Schema(
 );
 
 //====================================USERS========================================>>
-const userSchema = new mongoose.Schema(
-  {
-    gender: {
-      type: Boolean,
-      default: true,
-    },
-    phone: {
-      type: String,
-      trim: true,
-      default: '',
-      maxlength: 11,
-    },
-    email: {
-      type: String,
-      trim: true,
-      default: '',
-      maxlength: 32,
-    },
-    username: {
-      type: String,
-      trim: true,
-      unique: true,
-      required: true,
-      minlength: 8,
-      maxlength: 32,
-    },
-    password: {
-      type: String,
-      trim: true,
-      required: true,
-      maxlength: 32,
-    },
-    displayName: {
-      type: String,
-      trim: true,
-      default: '',
-      maxlength: 32,
-    },
-    status: {
-      type: String,
-      trim: true,
-      default: STATUS_USER.firstTime,
-      maxlength: 32,
-    },
-    roles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'roles', required: true }],
-    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'groups', default: null }],
-    images: {
-      avatar: {
-        url: { type: String, default: '' },
-        id: { type: String, default: '' },
-      },
-      wallPaper: {
-        url: { type: String, default: '' },
-        id: { type: String, default: '' },
-      },
-    },
-  },
-  { timestamps: true },
-);
 
 //====================================CATEGORY========================================>>
 const categorySchema = new mongoose.Schema(
@@ -143,9 +83,11 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     discount: { type: Number, default: 0 },
     producer: { type: String, required: true },
+    description: { type: String, trim: true, default: '', maxlength: 255 },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'categories', required: true },
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
-    expirationDate: { type: Date, required: true },
+    mfg: { type: Date, required: true },
+    exp: { type: Date, required: true },
     images: {
       avatar: {
         url: { type: String, default: '' },
@@ -255,40 +197,6 @@ const listSchema = [
   oderSchema,
 ];
 
-//====================================METHODS========================================>>
-userSchema.static('generateJWT', function (userId) {
-  return jwt.sign({ _id: userId }, process.env.JWT_SECRET_KEY, {
-    expiresIn: EXPIRES_TOKEN,
-  });
-});
-
-userSchema.static('generateRefreshJWT', function (userId) {
-  return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_KEY, { expiresIn: '30d' });
-});
-
-userSchema.static('validJWT', function (accessToken) {
-  return jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
-});
-
-userSchema.static('validRefreshJWT', function (refreshToken) {
-  return jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY);
-});
-
-userSchema.static('encryptPassword', function (password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null);
-});
-
-userSchema.static('validPassword', function (password, hash) {
-  return bcrypt.compareSync(password, hash);
-});
-
-userSchema.pre('save', function (next) {
-  if (this.isModified('password')) {
-    this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
-    return next();
-  }
-});
-
 //====================================PLUGIN========================================>>
 listSchema.forEach(item =>
   item.plugin(mongoose_delete, { overrideMethods: true, deletedAt: true }),
@@ -315,19 +223,5 @@ const models = {
   categories: mongoose.model('categories', categorySchema),
   activities: mongoose.model('activities', activitiesSchema),
 };
-
-models.users.findOneWithDeleted({ username: '0979955925' }).then(user => {
-  if (!user) {
-    new models.users({
-      displayName: 'moderator',
-      phone: '0979955925',
-      username: '0979955925',
-      password: '2171998Ryanphan@',
-    })
-      .save()
-      .then(() => console.log({ status: true, message: 'create init user successfully' }))
-      .catch(err => console.log({ status: false, message: err.message }));
-  }
-});
 
 export default models;

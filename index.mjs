@@ -51,9 +51,9 @@ app.get('/', function (req, res) {
 
 app.get('/api/v1/configs-app', (req, res) => res.send({success: true}))
 app.get('/generate-data', (req, res) => {
-  InsetFakeData();
   return res.send({success: true, message: 'Generate data successfully'});
 })
+InsetFakeData();
 app.use('/api/v1/auth', routersAuth);
 app.use('/api/v1/app', routersApp);
 

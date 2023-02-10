@@ -12,7 +12,7 @@
     "build-babel": "babel ./src -d ./build/src",
     "production": "npm run build && node ./build/src/index.mjs",
     "dev": "nodemon ./index.mjs",
-    "start": "pm2 start index.mjs --name IFLEX --no-daemon --log-date-format='MM-DD hh:mm:ss.SSS A'"
+    "start": "pm2 start index.mjs --name IFLEX --no-daemon"
   },
   "keywords": [],
   "author": "",

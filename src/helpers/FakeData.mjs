@@ -3,9 +3,12 @@
 import chalk from 'chalk';
 import models from '#models';
 import { DATA_ROLES, DATA_USERS, DATA_CATEGORIES, DATA_FEATURES } from '#mocks';
+import { BIG_CATEGORIES_DATA_DEFAULT } from '#constants';
 const termination = chalk.bold.magenta;
 
-export default function InsetFakeData() {
+export const initDataApp = () => {};
+
+export default function InsetFakeData(response) {
   Promise.all([
     models.roles.deleteMany(),
     models.users.deleteMany(),
@@ -14,7 +17,7 @@ export default function InsetFakeData() {
   ]).then(async () => {
     Promise.all([
       models.roles.insertMany(DATA_ROLES),
-      models.categories.insertMany(DATA_CATEGORIES.slice(0, 50)),
+      models.categories.insertMany(BIG_CATEGORIES_DATA_DEFAULT.concat(DATA_CATEGORIES.slice(0, 50))),
     ]).then(data => {
       LogMessage(data[0], 'ROLES');
       LogMessage(data[1], 'CATEGORIES');
