@@ -1,21 +1,21 @@
 {
-  "name": "IFLEX",
-  "version": "1.0.0",
+  "name": "iflex",
+  "version": "0.0.1",
   "description": "",
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "build": "babel index.js -d dist",
+    "build": "babel index.mjs -d dist",
     "test": "mocha --reporter spec",
     "watch": "mocha --watch",
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel ./src -d ./build/src",
     "production": "npm run build && node ./build/src/index.mjs",
     "dev": "nodemon ./index.mjs",
-    "start": "pm2 start index.mjs --name IFLEX --no-daemon"
+    "start": "pm2 start index.mjs --name iflex --no-daemon"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["iflex, fitness, workout, exercise, meal plan, check in"],
+  "author": "Ryan Phan",
   "license": "ISC",
   "imports": {
     "#introduce": "./src/views/introduce/index.html",
