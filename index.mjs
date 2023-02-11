@@ -17,7 +17,6 @@ import database from './src/configs/database.mjs';
 import upload from './src/configs/upload.mjs';
 import InsetFakeData from './src/helpers/FakeData.mjs';
 
-await database();
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -66,5 +65,6 @@ app.use((req, res, next) => next(createError(404, 'NOT FOUND API')));
 if (process.env.NODE_ENV !== 'test') {
   app.listen(process.env.PORT || 8000, async () => {
     console.log(chalk.bold.cyanBright('Server is running on port ' + process.env.PORT || 8000));
+    await database();
   });
 }
