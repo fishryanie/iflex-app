@@ -47,7 +47,7 @@ const router = express.Router();
 
 router.route('/findManyUser').get(controllers.user.findManyUser);
 
-// router.route('/deleteOneUser').delete(authController.deleteOneUser);
+// router.route('/deleteOneUser').delete(controllers.user.deleteOneUser);
 
 // router.route('/deleteManyUser').delete(authController.deleteManyUser);
 
