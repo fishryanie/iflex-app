@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
     gender: { type: Boolean, default: true },
     phone: { type: String, trim: true, default: '', maxlength: 11 },
     email: { type: String, trim: true, default: '', maxlength: 50 },
-    password: { type: String, trim: true, default: '', maxlength: 50 },
+    password: { type: String, trim: true, default: '', maxlength: 75 },
     profile: {
       fullName: { type: String, trim: true, default: '', maxlength: 50 },
       about: { type: String, trim: true, default: '', maxlength: 255 },

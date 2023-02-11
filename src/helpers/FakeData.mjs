@@ -1,6 +1,7 @@
 /** @format */
 
 import chalk from 'chalk';
+import bcrypt from 'bcrypt';
 import models from '#models';
 import { DATA_ROLES, DATA_USERS, DATA_CATEGORIES, DATA_FEATURES } from '#mocks';
 import { BIG_CATEGORIES_DATA_DEFAULT } from '#constants';
@@ -29,9 +30,9 @@ export default function InsetFakeData(response) {
         LogMessage(data[0], 'USERS');
         LogMessage(data[1], 'FEATURES');
         LogMessage(data[2], 'CATEGORIES_CHILD');
-      });
-    });
-  });
+      }).catch(error => console.log(error));
+    }).catch(error => console.log(error));
+  }).catch(error => console.log(error));
 }
 
 async function insert_many_features(arrayRoles) {
@@ -49,18 +50,15 @@ async function insert_many_features(arrayRoles) {
 }
 
 async function insert_many_user(arrayRoles) {
-  const arrayUsers = [];
-  for (const user of DATA_USERS) {
-    for (const x in arrayRoles) {
-      for (const y in user.roles) {
-        if (user.roles[y] === arrayRoles[x].name) {
-          user.roles[y] = arrayRoles[x]._id;
-        }
-      }
-    }
-    arrayUsers.push(await new models.users({ ...user }).save());
-  }
-  return arrayUsers;
+  const idUser = arrayRoles.find(element => element.name === 'User')._id;
+  const idAdmin = arrayRoles.find(element => element.name === 'Administrator')._id;
+  const idModerator = arrayRoles.find(element => element.name === 'Moderator')._id;
+  return models.users.insertMany(DATA_USERS.filter((element, index) => {
+    const hashPwd = bcrypt.hashSync(element.password, bcrypt.genSaltSync(10));
+    element.password = hashPwd
+    element.roles = index === 0 ? [idUser, idAdmin, idModerator] : [idUser]
+    return element
+  }))
 }
 
 async function insert_many_child_categories(arrayCategories) {
