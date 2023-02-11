@@ -5,7 +5,6 @@ import {
   percentage,
   convertToSeconds,
   generatePassword,
-  Pagination,
   convertToMilliseconds,
 } from '#helpers';
 import { expect, should } from 'chai';
@@ -48,9 +47,9 @@ describe('Convert To Seconds', () => {
 
 describe('Generate Password', () => {
   const password = generatePassword();
-  // it('should generate random password with minimum 8 characters and maximum 20 characters', () => {
-  //   expect(password.length).to.be.within(8, 20);
-  // });
+  it('should generate random password with minimum 8 characters and maximum 20 characters', () => {
+    expect(password.length).to.be.within(8, 20);
+  });
   it('should contain at least one upper case character', () => {
     expect(password).to.match(/[A-Z]/);
   });
@@ -60,9 +59,9 @@ describe('Generate Password', () => {
   it('should contain at least one number', () => {
     expect(password).to.match(/\d/);
   });
-  // it('should contain at least one special character', () => {
-  //   expect(password).to.match(/[!-@#\`|.,;'"+=~()$%^&_*]/);
-  // });
+  it('should contain at least one special character', () => {
+    expect(password).to.match(/[!-@#\`|.,;'"+=~()$%^&_*]/);
+  });
 });
 
 describe('Url To Tile', () => {
