@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.mjs",
   "type": "module",
+  "engines": {
+    "node": "18.3.0"
+  },
   "scripts": {
     "build": "babel index.mjs -d dist",
     "test": "mocha --reporter spec",
@@ -14,7 +17,9 @@
     "dev": "nodemon ./index.mjs",
     "start": "node index.mjs"
   },
-  "keywords": ["iflex, fitness, workout, exercise, meal plan, check in"],
+  "keywords": [
+    "iflex, fitness, workout, exercise, meal plan, check in"
+  ],
   "author": "Ryan Phan",
   "license": "ISC",
   "imports": {
@@ -39,7 +44,7 @@
     "lodash": "^4.17.21",
     "mocha": "^10.0.0",
     "moment": "^2.29.4",
-    "mongoose": "4.13.21",
+    "mongoose": "^6.9.1",
     "mongoose-delete": "^0.5.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
