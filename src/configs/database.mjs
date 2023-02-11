@@ -27,16 +27,11 @@ const configsMongodb = {
   },
 };
 
-const connectedDatabase = async () => {
-  try {
-    const results = await mongoose.connect(configsMongodb.url, configsMongodb.options) 
-    if (results) {
-      console.log(connected('Mongoose connect success'))
-      return results
-    }
-  } catch (error) {
-    console.log(colorError('Mongoose connect error'));
-  }
+const database = () => {
+  mongoose
+    .connect(configsMongodb.url, configsMongodb.options)
+    .then(() => console.log(connected('Mongoose connect success')))
+    .catch(() => console.log(colorError('Mongoose connect error')));
 };
 
-export default connectedDatabase;
+export default database;
