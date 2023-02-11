@@ -17,15 +17,14 @@ import database from './src/configs/database.mjs';
 import upload from './src/configs/upload.mjs';
 import InsetFakeData from './src/helpers/FakeData.mjs';
 
+await database();
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// InsetFakeData();
+
 env.config();
-
-database()
-// fakeRole()
-
 
 app.use(cors());
 app.use(cookies());
@@ -45,23 +44,17 @@ app.use(upload.fields([
   { name: 'avatar', maxCount: 2 }
 ])); 
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'src', 'views' , 'introduce.html'));
+app.get('/', (req, res) => {
+  return res.sendFile(path.join(__dirname, 'src', 'views' , 'introduce.html'));
 });
-
-app.get('/api/v1/configs-app', (req, res) => res.send({success: true}))
 app.get('/generate-data', (req, res) => {
   return res.send({success: true, message: 'Generate data successfully'});
 })
-InsetFakeData();
+app.get('/api/v1/configs-app', (req, res) => res.send({success: true}))
 app.use('/api/v1/auth', routersAuth);
 app.use('/api/v1/app', routersApp);
 
-
 app.use((req, res, next) => next(createError(404, 'NOT FOUND API')));
- 
-
-
 
 // app.get('/scan', (req, res) => res.render('scan'));
 // app.get('/qrcode', (req, res) => res.render('qrcode'));
@@ -71,9 +64,7 @@ app.use((req, res, next) => next(createError(404, 'NOT FOUND API')));
 
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(process.env.PORT || 8000, () => {
+  app.listen(process.env.PORT || 8000, async () => {
     console.log(chalk.bold.cyanBright('Server is running on port ' + process.env.PORT || 8000));
   });
 }
-
-//how to upload image to google drive using nodejs mongodb?

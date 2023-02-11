@@ -17,7 +17,7 @@ const mongooseUrlLocal = process.env.IFLEX_DATABASE_URL_LOCAL + process.env.IFLE
 const mongooseUrlGlobal = `mongodb+srv://${process.env.IFLEX_DATABASE_USERNAME}:${process.env.IFLEX_DATABASE_PASSWORD}@cluster0.lqsyp.mongodb.net/${process.env.IFLEX_DATABASE_NAME}?retryWrites=true&w=majority`;
 
 const configsMongodb = {
-  url: mongooseUrlLocal,
+  url: mongooseUrlGlobal,
   options: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -27,11 +27,16 @@ const configsMongodb = {
   },
 };
 
-const database = () => {
-  mongoose
-    .connect(configsMongodb.url, configsMongodb.options)
-    .then(() => console.log(connected('Mongoose connect success')))
-    .catch(() => console.log(colorError('Mongoose connect error')));
+const connectedDatabase = async () => {
+  try {
+    const results = await mongoose.connect(configsMongodb.url, configsMongodb.options) 
+    if (results) {
+      console.log(connected('Mongoose connect success'))
+      return results
+    }
+  } catch (error) {
+    console.log(colorError('Mongoose connect error'));
+  }
 };
 
-export default database;
+export default connectedDatabase;
