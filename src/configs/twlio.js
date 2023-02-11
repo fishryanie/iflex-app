@@ -11,7 +11,6 @@ const sendSMS = async (to, otp) => {
     from: '+84979955925',
     to: '+84' + to.slice(1)
   })
-
   console.log("🚀 ~ file: twlio.js ~ line 14 ~ sendSMS ~ message", message.sid)  
 }
 
