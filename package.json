@@ -12,7 +12,7 @@
     "build-babel": "babel ./src -d ./build/src",
     "production": "npm run build && node ./build/src/index.mjs",
     "dev": "nodemon ./index.mjs",
-    "start": "pm2 start index.mjs --name iflex --no-daemon"
+    "start": "node index.mjs"
   },
   "keywords": ["iflex, fitness, workout, exercise, meal plan, check in"],
   "author": "Ryan Phan",
@@ -43,11 +43,9 @@
     "mongoose-delete": "^0.5.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "node-geocoder": "^4.2.0",
     "otp-generator": "^2.0.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pm2": "^5.2.2",
     "twilio": "^3.81.0"
   },
   "devDependencies": {
