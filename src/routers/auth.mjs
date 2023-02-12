@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import express from 'express';
 
 import models from '#models';
-
 import moment from 'moment';
 import {
   checkPhone,
@@ -14,42 +13,42 @@ import {
   verifyToken,
   verifyUsername,
 } from '../middlewares/index.mjs';
-import { STATUS_NEXT } from '../constants/index.mjs';
 import upload from '../configs/upload.mjs';
 import controllers from '#controllers';
+import { STATUS_NEXT } from '#constants';
 const router = express.Router();
 
 // router.route('/refreshToken').post(verifyToken, controllers);
 
-// router.route('/login').post(verifyUsername, verifyPwd, authController.login);
+router.route('/login').post(verifyUsername, verifyPwd, controllers.user.login);
 
-// router.route('/sendOtp').post(checkPhone(STATUS_NEXT.unExist), authController.sendOTP);
+router.route('/sendOtp').post(checkPhone(STATUS_NEXT.unExist), controllers.user.sendOTP);
 
-// router.route('/verifyOtp').post(checkPhone(), authController.verifyOtp);
+router.route('/verifyOtp').post(checkPhone(), controllers.user.verifyOtp);
 
-// router.route('/createPass').post(checkPhone(STATUS_NEXT.exist), authController.createPwd);
+router.route('/createPass').post(checkPhone(STATUS_NEXT.exist), controllers.user.createPwd);
 
-// router.route('/forgotPass').post(checkPhone(STATUS_NEXT.exist), authController.forgotPwd);
+router.route('/forgotPass').post(checkPhone(STATUS_NEXT.exist), controllers.user.forgotPwd);
 
-// router.route('/changePass').post(verifyToken, authController.changePwd);
+router.route('/changePass').post(verifyToken, controllers.user.changePwd);
 
 // router.route('/uploadAvatar').post(verifyToken, authController.uploadAvatar);
 
-// // router.route('/editProfile').put(verifyToken, authController.editProfile);
+router.route('/editProfile').put(verifyToken, controllers.user.editProfile);
 
 // router.route('/joinGroup').patch(verifyToken, authController.joinGroup);
 
-// router.route('/findOneUser').get(
-//   verifyToken,
-//   verifyPermission,
-//   authController.findOneUser
-// );
+router.route('/findOneUser').get(
+  verifyToken,
+  verifyPermission,
+  controllers.user.findOneUser
+);
 
 router.route('/findManyUser').get(controllers.user.findManyUser);
 
-// router.route('/deleteOneUser').delete(controllers.user.deleteOneUser);
+router.route('/deleteOneUser').delete(controllers.user.deleteOneUser);
 
-// router.route('/deleteManyUser').delete(authController.deleteManyUser);
+router.route('/deleteManyUser').delete(controllers.user.deleteManyUser);
 
 // router.route('/statistics/register/newly').post(authController.statisticsOfNewlyUsers);
 

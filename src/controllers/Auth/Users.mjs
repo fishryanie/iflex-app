@@ -13,6 +13,221 @@ import { generatePassword, notFoundError, serverError } from '../../helpers/inde
 const { TokenExpiredError } = jwt;
 
 const userController = {
+  login: (req, res) => {
+    const { _id } = req.currentUser;
+    const accessToken = models.users.generateJWT(_id);
+    const refreshToken = models.users.generateRefreshJWT(_id);
+    models.users
+      .findOneAndUpdate(
+        { _id },
+        { $set: { refreshToken } },
+        { new: true, upsert: true, strict: false, returnNewDocument: true },
+      )
+      .then(() => {
+        return res.status(200).send({
+          success: true,
+          message: 'Login Successfully',
+          data: { accessToken, refreshToken },
+        });
+      });
+  },
+
+  sendOTP: async (req, res) => {
+    try {
+      const { phone } = req.body;
+      const OTP = otpGenerator.generate(NUM_OTP, {
+        digits: true,
+        alphabets: false,
+        upperCase: false,
+        specialChars: false,
+      });
+      // await sendSMS(phone, OTP)
+      const salt = await bcrypt.genSalt(10);
+      const otp = await bcrypt.hash(OTP, salt);
+      const result = await models.otps.create({ phone, otp });
+      if (!result) {
+        return res.status(400).send({
+          success: false,
+          message: 'Otp send failure!',
+        });
+      }
+      return res.status(200).send({
+        success: true,
+        otp: OTP,
+        expires: EXPIRES_OTP,
+        message: 'Otp send successfully!',
+      });
+    } catch (err) {
+      console.log('🚀 ~ file: auth.js:79 ~ registerOTP: ~ err', err);
+    }
+  },
+
+  verifyOtp: async (req, res) => {
+    try {
+      const { phone, otp } = req.body;
+      const otpHolder = await models.otps.findOne({ phone });
+      if (!otpHolder) {
+        return res.status(400).send({
+          success: false,
+          message: 'You use an Expired OTP!',
+        });
+      }
+      const validUser = await bcrypt.compare(otp, otpHolder.otp);
+      const pwd = generatePassword();
+      if (otpHolder.phone === phone && validUser) {
+        const newUser = new models.users({
+          phone,
+          username: phone,
+          password: pwd,
+        });
+        await newUser.save();
+        await models.otps.deleteMany({
+          phone: otpHolder.phone,
+        });
+        return res.status(200).send({
+          success: true,
+          message: 'User Registration Successfull!',
+        });
+      } else {
+        return res.status(400).send({
+          success: false,
+          message: 'Your OTP was wrong!',
+        });
+      }
+    } catch (error) {
+      console.log('🚀 ~ file: auth.js:169 ~ verifyOtp: ~ error', error);
+    }
+  },
+
+  createPwd: async (req, res) => {
+    try {
+      const { phone, password } = req.body;
+      const hashPassword = await models.users.hashPassword(password);
+      const result = await models.users.findOneAndUpdate(
+        { phone: phone },
+        { password: hashPassword },
+        { new: true },
+      );
+      if (!result) {
+        return res.status(400).send({
+          success: false,
+          messages: messages.UpdatePasswordFail,
+        });
+      }
+      return res.status(200).send({
+        success: true,
+        messages: 'Password generated successfully',
+      });
+    } catch (error) {}
+  },
+
+  forgotPwd: async (req, res) => {
+    const { phone, email } = req.body;
+    try {
+      const newPwd = generatePassword();
+      const newPwdHash = await models.users.hashPassword(newPwd);
+      if (phone) {
+        const result = await models.users.findOneAndUpdate(
+          { phone },
+          { password: newPwdHash },
+          { new: true },
+        );
+        if (!result) {
+          return res.status(404).send({
+            success: false,
+            message: 'Phone number does not exist',
+          });
+        }
+        return res.status(200).send({
+          success: true,
+          newPass: newPwd,
+          message: 'New password has been sent to your phone number',
+        });
+      } else {
+        const result = await models.users.findOneAndUpdate(
+          { email },
+          { password: newPwdHash },
+          { new: true },
+        );
+        if (!result) {
+          return res.status(404).send({
+            success: false,
+            message: 'Email does not exist',
+          });
+        }
+        return res.status(200).send({
+          success: true,
+          newPass: newPwd,
+          message: 'Email has been sent to your email',
+        });
+      }
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+
+  changePwd: async (req, res) => {
+    const userId = req.userIsLogged._id.toString();
+    const newPass = req.body.newPass;
+    try {
+      const result = await models.users.findOneAndUpdate(
+        { _id: userId },
+        { password: await models.users.hashPassword(newPass) },
+        { new: true, upsert: true },
+      );
+      if (!result) {
+        return res.status(404).send({
+          success: false,
+          message: 'Id user does not exist',
+        });
+      }
+      return res.status(200).send({
+        success: true,
+        message: 'Change Password Successfully!!!',
+      });
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+
+  refreshToken: async (req, res) => {
+    try {
+      const { refreshToken } = req.body;
+      const verifyRefreshToken = await models.users.validRefreshJWT(refreshToken);
+      if (verifyRefreshToken) {
+        const newAccessToken = await models.users.generateJWT(verifyRefreshToken._id);
+        const newRefreshToken = await models.users.generateRefreshJWT(
+          verifyRefreshToken._id,
+        );
+        const result = await models.users.findOneAndUpdate(
+          { _id: verifyRefreshToken._id },
+          { $set: { refreshToken: newRefreshToken, accessToken: newAccessToken } },
+          { upsert: true, new: true, returnNewDocument: true, strict: false },
+        );
+        if (result) {
+          return res.status(200).send({
+            success: true,
+            message: 'Refresh Token Successfully',
+            data: { newAccessToken, newRefreshToken },
+          });
+        }
+      }
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        return res.status(440).send({
+          success: false,
+          message: 'Unauthorized! Refresh token was expired!',
+        });
+      }
+      return serverError(error, res);
+    }
+  },
   /* This function is used to find one user. */
   findOneUser: async (req, res) => {
     try {
