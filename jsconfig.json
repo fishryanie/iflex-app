@@ -4,6 +4,7 @@
     "module": "commonjs",
     "baseUrl": "./src",
     "paths": {
+      "#mocks": ["mocks/index.mjs"],
       "#models": ["models/index.mjs"],
       "#helpers": ["helpers/index.mjs"],
       "#constants": ["constants/index.mjs"],

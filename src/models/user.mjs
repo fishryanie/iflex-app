@@ -12,16 +12,22 @@ const userSchema = new mongoose.Schema(
     phone: { type: String, trim: true, default: '', maxlength: 11 },
     email: { type: String, trim: true, default: '', maxlength: 50 },
     password: { type: String, trim: true, default: '', maxlength: 75 },
-    profile: {
-      fullName: { type: String, trim: true, default: '', maxlength: 50 },
-      about: { type: String, trim: true, default: '', maxlength: 255 },
-      address: { type: String, trim: true, default: '', maxlength: 100 },
-      dob: { type: String, trim: true, default: '', maxlength: 30 },
-      location: {
-        lat: { type: Number, default: null, maxlength: 30 },
-        long: { type: Number, default: null, maxlength: 30 },
-      },
-    },
+    about: { type: String, trim: true, default: '', maxlength: 255 },
+    dob: { type: String, trim: true, default: '', maxlength: 30 },
+    firstName: { type: String, trim: true, default: '', maxlength: 50 },
+    lastName: { type: String, trim: true, default: '', maxlength: 50 },
+    listLocation: {
+      type: [
+        {
+          title: { type: String, required: true },
+          address: { type: String, required: true },
+          latitude: { type: Number, required: true },
+          longitude: { type: Number, required: true },
+          isDefault: { type: Number, required: 0},
+          fullAddress: { type: String, required: true },
+          about: { type: String, required: '' }
+        }
+    ], default: []},
     username: {
       type: String,
       trim: true,
