@@ -1,8 +1,8 @@
 import appController from './app/index.mjs';
 import userController from './auth/Users.mjs';
-import categoriesController from './Shared/Categories.mjs';
-import groupController from './Shared/Groups.mjs';
-import locationController from './Shared/Location.mjs';
+import categoriesController from './shared/Categories.mjs';
+import groupController from './shared/Groups.mjs';
+import locationController from './shared/Location.mjs';
 
 const controllers = {
   app: appController,
