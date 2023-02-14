@@ -1,6 +1,12 @@
 /** @format */
 
 const appController = {
+  getConfig: () => {
+    return { version: '0.0.1' };
+  },
+  getConnections: () => {
+    return true;
+  },
   getPolicyAndTerms: language => {
     if (language === 'vi' || !language) {
       return [
@@ -31,7 +37,7 @@ const appController = {
         },
       ];
     }
-    if (language === 'en'){
+    if (language === 'en') {
       return [
         {
           title: 'Terms of Service',

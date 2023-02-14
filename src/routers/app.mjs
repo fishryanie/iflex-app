@@ -11,7 +11,12 @@ router.route('/get-configs').get((request, response) => {
   response.status(200).send({
     success: true,
     message: 'Successfully',
-    data: type === 'terms-policy' ? controllers.app.getPolicyAndTerms(language) : null,
+    data:
+      type === 'terms-policy'
+        ? controllers.app.getPolicyAndTerms(language)
+        : type === 'connections'
+        ? controllers.app.getConnections()
+        : null,
   });
 });
 
