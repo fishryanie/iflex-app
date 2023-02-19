@@ -4,7 +4,7 @@ export const NUM_OTP = 6;
 
 export const EXPIRES_OTP = 300;
 
-export const EXPIRES_TOKEN = 1800; // 30m
+export const EXPIRES_TOKEN = 86400; // 1d
 
 export const EXPIRES_REFRESH = 2592000; // 30day
 

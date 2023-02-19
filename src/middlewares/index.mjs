@@ -92,7 +92,7 @@ export const verifyPwd = async (req, res, next) => {
 export const verifyToken = async (req, res, next) => {
   const access_token = req.headers['authorization'];
   if (!access_token) {
-    return res.status(401).send({
+    return res.status(404).send({
       success: false,
       message: 'Access denied! no token provided.',
     });
@@ -108,12 +108,12 @@ export const verifyToken = async (req, res, next) => {
   try {
     const decoded = await models.users.validJWT(token);
     if (decoded && req.body.refreshToken) {
-      return res.status(401).send({
+      return res.status(440).send({
         success: false,
         message: 'Access denied! token has not expired',
       });
     }
-    req.currentUser = decoded;
+    req.idUser = decoded._id;
     next();
   } catch (error) {
     if (error instanceof TokenExpiredError) {
@@ -122,7 +122,7 @@ export const verifyToken = async (req, res, next) => {
       }
       return res.status(440).send({
         success: false,
-        message: 'Unauthorized! Access Token was expired!',
+        message: 'Unauthorized! RefreshToken was expired!',
       });
     }
     return res.status(500).send({
@@ -136,8 +136,13 @@ export const verifyPermission = async (req, res, next) => {
   try {
     const features = await models.features.findOne({ api: req.api });
     if (!features) {
+      const idAccessRoles = await models.roles.find(
+        { $or: [{ name: 'Administrator' }, { name: 'Moderator' }] },
+        { _id: 1 },
+      );
       const createNewFeature = await models.features.create({
         name: URLToTile(req.url),
+        roles: [idAccessRoles[0]._id, idAccessRoles[1]._id],
         url: req.url,
       });
       if (createNewFeature) {
@@ -147,12 +152,14 @@ export const verifyPermission = async (req, res, next) => {
         });
       }
     }
-    const userIsLogged = await models.users.findById(req.currentUser._id, {
+    const userIsLogged = await models.users.findById(req.idUser, {
       __v: 0,
       password: 0,
       accessToken: 0,
       refreshToken: 0,
     });
+    console.log("🚀 ~ file: index.mjs:161 ~ verifyPermission ~ userIsLogged", userIsLogged)
+    console.log("🚀 ~ file: index.mjs:161 ~ verifyPermission ~ userIsLogged", req.idUser)
     const intersection = features.roles.filter(
       element => userIsLogged.roles.indexOf(element) !== -1,
     );
@@ -164,8 +171,6 @@ export const verifyPermission = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    return error.kind === 'ObjectId'
-      ? notFoundError(res, 'Id user does not exist')
-      : serverError(error, res);
+    console.log('🚀 ~ file: index.mjs:172 ~ verifyPermission ~ error', error);
   }
 };

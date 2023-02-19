@@ -34,11 +34,11 @@ router.route('/changePass').post(verifyToken, controllers.user.changePwd);
 
 // router.route('/uploadAvatar').post(verifyToken, authController.uploadAvatar);
 
-router.route('/editProfile').put(verifyToken, controllers.user.editProfile);
+router.route('/update-one-user').put(verifyToken, controllers.user.editProfile);
 
 // router.route('/joinGroup').patch(verifyToken, authController.joinGroup);
 
-router.route('/findOneUser').get(
+router.route('/get-one-user').get(
   verifyToken,
   verifyPermission,
   controllers.user.findOneUser

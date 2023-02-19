@@ -23,11 +23,13 @@ const userSchema = new mongoose.Schema(
           address: { type: String, required: true },
           latitude: { type: Number, required: true },
           longitude: { type: Number, required: true },
-          isDefault: { type: Number, required: 0},
+          isDefault: { type: Number, required: 0 },
           fullAddress: { type: String, required: true },
-          about: { type: String, required: '' }
-        }
-    ], default: []},
+          about: { type: String, required: '' },
+        },
+      ],
+      default: [],
+    },
     username: {
       type: String,
       trim: true,
@@ -60,22 +62,15 @@ const userSchema = new mongoose.Schema(
     roles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'roles', required: true }],
     groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'groups', default: null }],
     images: {
-      type: {
-        avatar: {
-          default: null,
-          type: {
-            url: { type: String, default: '' },
-            id: { type: String, default: '' },
-          },
-        },
-        wallPaper: {
-          type: {
-            url: { type: String, default: '' },
-            id: { type: String, default: '' },
-          },
-          default: null,
-        },
+      avatar: {
+        url: '',
+        id: '',
       },
+      cover: {
+        url: '',
+        id: '',
+      },
+      other: [],
     },
   },
   { timestamps: true },

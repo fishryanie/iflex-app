@@ -202,9 +202,7 @@ const userController = {
       const verifyRefreshToken = await models.users.validRefreshJWT(refreshToken);
       if (verifyRefreshToken) {
         const newAccessToken = await models.users.generateJWT(verifyRefreshToken._id);
-        const newRefreshToken = await models.users.generateRefreshJWT(
-          verifyRefreshToken._id,
-        );
+        const newRefreshToken = await models.users.generateRefreshJWT(verifyRefreshToken._id);
         const result = await models.users.findOneAndUpdate(
           { _id: verifyRefreshToken._id },
           { $set: { refreshToken: newRefreshToken, accessToken: newAccessToken } },
@@ -229,11 +227,11 @@ const userController = {
     }
   },
   /* This function is used to find one user. */
-  findOneUser: async (req, res) => {
+  findOneUser: async (request, res) => {
     try {
-      const userId = req.query.userId || req.currentUser._id;
+      const idUser = request.query.idUser || request.idUser;
       const result = await models.users
-        .findOne({ _id: userId }, { __v: 0, password: 0 })
+        .findOne({ _id: idUser }, { __v: 0, password: 0, deleted: 0 })
         .populate('roles', 'name')
         .populate('groups', 'name');
       if (!result) {
@@ -243,13 +241,13 @@ const userController = {
         return res.status(200).send({
           success: true,
           message: 'Find User Successfully',
-          data: { ...other, avatar: images.avatar.url },
+          data: { ...other, avatar: images?.avatar?.url },
         });
       }
     } catch (error) {
       return error.kind === 'ObjectId'
         ? notFoundError(res, 'Id user does not exist')
-        : serverError(error, res);
+        : serverError(res, error);
     }
   },
 
@@ -263,6 +261,7 @@ const userController = {
     const page = parseInt(req.query.page) || 1;
     const sort = { [req.query.sort]: orderby };
     const skip = (page - 1) * amount;
+    const idUser = req.query.idUser;
 
     if (roles) {
       filter.push({ roles: mongoose.Types.ObjectId(roles) });

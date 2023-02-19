@@ -45,9 +45,10 @@ app.use(upload.fields([
 app.get('/', (req, res) => {
   return res.sendFile(path.join(__dirname, 'src', 'views' , 'introduce.html'));
 });
-app.get('/generate-data', (req, res) => {
-  return res.send({success: true, message: 'Generate data successfully'});
-})
+app.get('/document', (req, res) => {
+  return res.sendFile(path.join(__dirname, 'src', 'views' , 'document.html'));
+});
+
 app.get('/api/v1/configs-app', (req, res) => res.send({success: true}))
 app.use('/api/v1/auth', routersAuth);
 app.use('/api/v1/app', routersApp);

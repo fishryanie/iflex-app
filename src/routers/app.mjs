@@ -6,19 +6,7 @@ import { verifyToken } from '../middlewares/index.mjs';
 
 const router = express.Router();
 // App
-router.route('/get-configs').get((request, response) => {
-  const { type, language } = request.query;
-  response.status(200).send({
-    success: true,
-    message: 'Successfully',
-    data:
-      type === 'terms-policy'
-        ? controllers.app.getPolicyAndTerms(language)
-        : type === 'connections'
-        ? controllers.app.getConnections()
-        : null,
-  });
-});
+router.route('/get-configs').get(controllers.app.getConfig);
 
 // Shared
 router.route('/get-location').get((request, response) => {

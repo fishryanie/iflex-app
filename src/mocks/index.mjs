@@ -16,4 +16,7 @@ export const DATA_FEATURES = require('./data/features.json');
 
 export const DATA_CATEGORIES = require('./data/categories.json');
 
+export const DATA_TERMS_POLICY = require('./data/termsPolicy.json');
+
+
 
