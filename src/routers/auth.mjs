@@ -6,13 +6,7 @@ import express from 'express';
 
 import models from '#models';
 import moment from 'moment';
-import {
-  checkPhone,
-  verifyPermission,
-  verifyPwd,
-  verifyToken,
-  verifyUsername,
-} from '../middlewares/index.mjs';
+import { checkPhone, verifyPermission, verifyPwd, verifyToken, verifyUsername } from '../middlewares/index.mjs';
 import upload from '../configs/upload.mjs';
 import controllers from '#controllers';
 import { STATUS_NEXT } from '#constants';
@@ -38,17 +32,15 @@ router.route('/update-one-user').put(verifyToken, controllers.user.editProfile);
 
 // router.route('/joinGroup').patch(verifyToken, authController.joinGroup);
 
-router.route('/get-one-user').get(
-  verifyToken,
-  verifyPermission,
-  controllers.user.findOneUser
-);
+router.route('/getUser').get(verifyToken, verifyPermission, controllers.user.getUser);
 
 router.route('/findManyUser').get(controllers.user.findManyUser);
 
 router.route('/deleteOneUser').delete(controllers.user.deleteOneUser);
 
 router.route('/deleteManyUser').delete(controllers.user.deleteManyUser);
+
+router.route('/locationsUser').patch(verifyToken, controllers.user.locationsUser);
 
 // router.route('/statistics/register/newly').post(authController.statisticsOfNewlyUsers);
 

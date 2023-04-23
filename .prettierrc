@@ -1,8 +1,9 @@
 {
   "arrowParens": "avoid",
-  "printWidth": 100,
+  "printWidth": 160,
   "jsxBracketSameLine": true,
   "singleQuote": true,
-  "tabWidth": 2,
+  "tabWidth": 4,
+  "tabSize": 4,
   "trailingComma": "all"
 }
